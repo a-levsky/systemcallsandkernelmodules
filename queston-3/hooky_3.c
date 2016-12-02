@@ -12,7 +12,7 @@
 
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Stefan Chu");
+MODULE_AUTHOR("Stefan Chu, Arseny Moguilevski");
 
 static unsigned long **syscall_table;
 

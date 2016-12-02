@@ -15,7 +15,7 @@
 #include <asm/pgtable.h>
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Stefan Chu");
+MODULE_AUTHOR("Stefan Chu, Arseny Moguilevski");
 
 /* This function maps the address space of a process to the kernel
  * The full command including arguements used to start the process will 

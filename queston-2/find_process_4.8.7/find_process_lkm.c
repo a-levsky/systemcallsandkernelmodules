@@ -10,7 +10,7 @@
 
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Stefan Chu");
+MODULE_AUTHOR("Stefan Chu, Arseny Moguilevski");
 
 
 static int print_string_init(char *str)
