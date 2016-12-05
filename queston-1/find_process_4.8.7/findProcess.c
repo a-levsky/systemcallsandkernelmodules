@@ -10,23 +10,30 @@
 
 asmlinkage long sys_find_process(char *process_name) {
 
-	char *pid = kmalloc(8, GFP_KERNEL);
-	struct task_struct *task;
-	struct tty_struct *my_tty;
-	my_tty = current->signal->tty;
+    char *pid = kmalloc(8, GFP_KERNEL);
+    struct task_struct *task;
+    struct tty_struct *my_tty;
+    my_tty = current->signal->tty;
 
-	if (my_tty != NULL) {
-		for_each_process(task) {
-			if ((strncmp(process_name, task->comm, (strlen(str) > TASK_COMM_LEN) ? 16 : strlen(str))) == 0) {
-				sprintf(pid, "%d", task->pid);
-				((my_tty->ops)->write) (my_tty, pid, strlen(pid));
-				((my_tty->ops)->write) (my_tty, "\015\012", 2);
-			}
-		}
-		return 0;
+    if (my_tty != NULL) {
+	for_each_process(task) {
+
+	    /* If the strlen is greater than TASK_COMM_LEN, only strncmp 16 bytes, else use the actual strlen.
+	       Does not cmp space characters! So, it will only cmp everything up untill the first space 
+	       character is encountered. */
+
+	    if ((strncmp(process_name, task->comm, (strlen(str) > TASK_COMM_LEN) ? 16 : strlen(str))) == 0) {
+		sprintf(pid, "%d", task->pid);
+		((my_tty->ops)->write) (my_tty, pid, strlen(pid));
+		((my_tty->ops)->write) (my_tty, "\015\012", 2);
+	    }
+
 	}
-	else {
-		printk(KERN_ERR "Could not establish tty device\n");
-		return -ENODEV;
-	} 
+	return 0;
+    }
+    else {
+	printk(KERN_ERR "Could not establish tty device\n");
+	return -ENODEV;
+    } 
+
 }

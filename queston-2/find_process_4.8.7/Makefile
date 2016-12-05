@@ -4,5 +4,5 @@ PWD = $(shell pwd)
 all:
 	$(MAKE) -C $(KERNEL_DIR) SUBDIRS=$(PWD)
 clean:
-	rm *.mod.* *.o *.ko *.symvers *.order
+	rm *.mod.c *.o *.ko *.symvers *.order
 
