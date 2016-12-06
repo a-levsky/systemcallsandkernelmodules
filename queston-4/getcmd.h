@@ -15,12 +15,13 @@
 #include <asm/pgtable.h>
 
 /* The kernel represents a process's address space with a data struct called the memory descriptor.
- * This structure contains all the information related to the process address space, including the
- * full command used to execute it. Thus, each task_struct has a member called mm_struct which
- * represents this. And a vm_area_struct within the mm_struct which identifies the area of memory 
- * in the processes memory layout. We are interested in the processes stack because that is where 
- * the commandline arguements are stored. However, the address we want (mm->arg_start) is inaccessible 
- * so we have to map the processes page entry where mm->start is to the kernel so we can read from it. 
+ * This structure contains all the information related to the process address space, including the stack
+ * which contains the full command used to execute and create the process. Each task_struct has a member 
+ * called mm_struct which represents represents this. And a vm_area_struct within the mm_struct which 
+ * identifies the area of memory in the processes memory layout. 
+ * We are interested in the processes stack because that is where the commandline arguements are stored. 
+ * However, the address we want (mm->arg_start) is inaccessible so we have to map the processes page entry 
+ * where mm->arg_start is to the kernel so we can read from it. 
  * Once read, we do a byte for byte copy of the commandline args into a buffer and compare it with 
  * the what the user entered (str) and return the result.*/
 static int get_cmdline_name(struct task_struct *task, const char *str)
@@ -47,7 +48,7 @@ static int get_cmdline_name(struct task_struct *task, const char *str)
 
     len = mm->arg_end - mm->arg_start;
 
-	/* Get offset to the commandline arguements */
+    /* Get offset to the commandline arguements */
     offset = mm->arg_start & (PAGE_SIZE - 1);
 
     arg_start = mm->arg_start; 
@@ -63,6 +64,8 @@ static int get_cmdline_name(struct task_struct *task, const char *str)
     get_page(page);
     p = kmap(page); 
 
+    /* A byte for byte copy is necessary because memcpy/memmove/strcpy will not copy a null byte. With this 
+       loop we can insert a space for every null byte encountered and continue copying until the length is 0. */
     while (len-->(size_t)0) {
 	if (((unsigned char const *)p + offset)[len] == (char)0) {
 	    buf[len] = ' ';
