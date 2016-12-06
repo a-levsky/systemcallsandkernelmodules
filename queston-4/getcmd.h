@@ -19,9 +19,10 @@
  * full command used to execute it. Thus, each task_struct has a member called mm_struct which
  * represents this. And a vm_area_struct within the mm_struct which identifies the area of memory 
  * in the processes memory layout. We are interested in the processes stack because that is where 
- * the commandline arguements are stored. However, the address we want is in userspace so we have to map
- * it to the kernel so we can read it. Once read we do a byte for byte copy of the commandline args
- * into a buffer and compare it with the what the user entered (str) and return the result.*/
+ * the commandline arguements are stored. However, the address we want (mm->arg_start) is inaccessible 
+ * so we have to map the processes page entry where mm->start is to the kernel so we can read from it. 
+ * Once read, we do a byte for byte copy of the commandline args into a buffer and compare it with 
+ * the what the user entered (str) and return the result.*/
 static int get_cmdline_name(struct task_struct *task, const char *str)
 {
     struct mm_struct *mm = task->mm; 
@@ -46,10 +47,12 @@ static int get_cmdline_name(struct task_struct *task, const char *str)
 
     len = mm->arg_end - mm->arg_start;
 
+	/* Get offset to the commandline arguements */
     offset = mm->arg_start & (PAGE_SIZE - 1);
 
     arg_start = mm->arg_start; 
 
+    /* http://stackoverflow.com/questions/29125362/reading-the-contents-of-a-user-space-page-from-kernel */
     pgd = pgd_offset(vma->vm_mm, arg_start);
     pud = pud_offset(pgd, arg_start);
     pmd = pmd_offset(pud, arg_start);
