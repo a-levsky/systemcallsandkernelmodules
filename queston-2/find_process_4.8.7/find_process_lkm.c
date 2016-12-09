@@ -33,12 +33,12 @@ static int print_string_init(void *str)
 	   the process names with our hardcoded one. For every match that occurs we increase the count, and
 	   when the last process is scanned we compare the count against the number of matched processes 
 	   already present. If we count more than what is already present then that means a new instance 
-	   began. 
+	   began. Anything else, then the routine continues. 
 	   
 	   Every time we finish scanning the processes, instead of starting at &init_task we start
 	   back at our current threads address and continue from there, since any new process will have
-	   a greater pid than ours; The present value then set to the number of matches found (count) and 
-	   the counter is reset. */
+	   a greater pid than ours; The present value is then set to the number of matches found (count) and 
+	   the count is reset. */
 
 	while(!kthread_should_stop()) {
 	    msleep(10);
@@ -65,7 +65,8 @@ static int print_string_init(void *str)
 
 static int __init startup(void) {
 	
-	/**/
+	printk(KERN_INFO "find_process: module loaded.\n");
+	/* Init thread and look for "python" instances. */
 	task = kthread_run(&print_string_init, (void *)"python", "mythread");
 	return 0;
 }

@@ -18,7 +18,7 @@ static int print_group_init(int location)
     time_to_tm(tv.tv_sec, 0, &tm_val);
     
     printk("TIMEE:%ld, %02d:%02d:%02d\n", (long)tm_val.tm_year + 1900, 
-					  (int)(((tv.tv_sec/ 60) / 60) % 24) - 4, 
+					  (int)(((tv.tv_sec/ 60) / 60) % 24) - 5, 
 					  (int)(tv.tv_sec / 60) % 60, 
 					  (int)tv.tv_sec % 60);
     printk("Stefan Chu: Wumbology. The Study of Wumbo.\n");
