@@ -84,7 +84,8 @@ static int __init load(void)
 
     /* Create a /proc entry that we can echo commands to (our module). 
        EXAMPLE: # echo "enable" > /proc/sandshade 
-       	    or: # echo "python -m SimpleHTTPServer" > /proc/sandshade */
+       	    or: # echo "python -m SimpleHTTPServer" > /proc/sandshade 
+       Was thinking about the beach. That's where the name sandshade came from. */
     proc_create("sandshade", 0666, NULL, &fops);
     printk("MODULE: loaded.\n");
     return 0;
